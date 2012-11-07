@@ -36,7 +36,7 @@
 
 
 // constants
-#define VERSION			"0.11"
+#define VERSION			"0.12"
 #define MAX_PATTERN		0x100
 #define MAX_ROW			0x100
 /* terminal */
@@ -71,6 +71,7 @@ Pattern;
 
 
 // global variables
+static const char header[] = "stlm0.1x";
 static u32     tpr;			// time per row
 static u8      mode;		// 0 => note, 1 => fx, 2 => fxv1, 3 => fxv2
 static u8      coct;		// current octave
@@ -273,6 +274,10 @@ static int process_key(int key)
 				pats[cpat].notes[crow] = 0;
 				cmd_move_row(+1);
 			}
+			else if (mode != 0 && key == ' ') {
+				pats[cpat].fxs[crow] = 0;
+				pats[cpat].fxvals[crow] = 0;
+			}
 			else if (mode == 0 && key >= '1' && key <= '7')
 				coct = key - '0';
 			else if (mode == 1 && isdigit(key))
@@ -432,21 +437,43 @@ static void cmd_stop()
 
 static void cmd_save()
 {
-	// XXX
-	printf("\a");
-//	// .stm; SpeakerTracker Module
-//	FILE * fp = fopen("music.stm", "w");
-//	if (!fp) {
+	// .stlm; SpeakerTracker Loose Module
+	FILE * fp = fopen("music.stlm", "w");
+	if (!fp) {
 //		fprintf(stderr, "Could not save.");
-//		printf("\a");
-//	}
+		printf("\a");
+		return;
+	}
+	fwrite(header, sizeof(header)-1, 1, fp);
+	fwrite(&npat, sizeof(npat), 1, fp);
+	fwrite(pats, sizeof(pats), 1, fp);
+	fclose(fp);
 }
 
 
 static void cmd_open()
 {
-	// XXX
-	printf("\a");
+	// .stlm; SpeakerTracker Loose Module
+	FILE * fp = fopen("music.stlm", "r");
+	if (!fp) {
+//		fprintf(stderr, "Could not open.");
+		printf("\a");
+		return;
+	}
+
+	char str[sizeof(header)-1];
+	fread(str, sizeof(header)-1, 1, fp);
+	if (strncmp(header, str, sizeof(header)-1)) {
+//		fprintf(stderr, "File type mismatch.");
+		printf("\a");
+		return;
+	}
+
+	cmd_create();
+
+	fread(&npat, sizeof(npat), 1, fp);
+	fread(pats, sizeof(pats), 1, fp);
+	fclose(fp);
 }
 
 
@@ -521,8 +548,45 @@ static void thread_play()
 					break;
 			}
 		}
-		if (note) beep(note_to_freq(note));
-		usleep(1000 * tpr);
+		float freq;
+		if (note) {
+			freq = note_to_freq(note);
+			beep(freq);
+		}
+		int i, j;
+		if (fx) {
+			fx--;
+			switch (fx) {
+				case 1:	// down
+					i = fxval;
+					while (i--) {
+						usleep(1000 * tpr / fxval);
+						freq *= 0.9;
+						beep(freq);
+					}
+					break;
+				case 2:	// up
+					i = fxval;
+					while (i--) {
+						usleep(1000 * tpr / fxval);
+						freq *= 1.1;
+						beep(freq);
+					}
+					break;
+				case 3:	// vib
+					i = fxval;
+					j = 0;
+					while (i--) {
+						usleep(1000 * tpr / fxval);
+						beep(freq * j);
+						j = !j;
+					}
+					break;
+				default:
+					usleep(1000 * tpr);
+			}
+		}
+		else usleep(1000 * tpr);
 		cmd_move_row(+1);
 		render();
 	}
