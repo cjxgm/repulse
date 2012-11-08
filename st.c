@@ -36,7 +36,7 @@
 
 
 // constants
-#define VERSION			"0.12"
+#define VERSION			"0.13"
 #define MAX_PATTERN		0x100
 #define MAX_ROW			0x100
 /* terminal */
@@ -71,7 +71,7 @@ Pattern;
 
 
 // global variables
-static const char header[] = "stlm0.1x";
+static const char header[] = "sttm0.1x";
 static u32     tpr;			// time per row
 static u8      mode;		// 0 => note, 1 => fx, 2 => fxv1, 3 => fxv2
 static u8      coct;		// current octave
@@ -437,24 +437,33 @@ static void cmd_stop()
 
 static void cmd_save()
 {
-	// .stlm; SpeakerTracker Loose Module
-	FILE * fp = fopen("music.stlm", "w");
+	// .stm; Speakertracker Tight Module
+	FILE * fp = fopen("music.stm", "w");
 	if (!fp) {
 //		fprintf(stderr, "Could not save.");
 		printf("\a");
 		return;
 	}
+
 	fwrite(header, sizeof(header)-1, 1, fp);
 	fwrite(&npat, sizeof(npat), 1, fp);
-	fwrite(pats, sizeof(pats), 1, fp);
+	int i, j;
+	for (i=0; i<npat; i++) {
+		fwrite(&pats[i].nrow, sizeof(pats[0].nrow), 1, fp);
+		for (j=0; j<pats[i].nrow; j++) {
+			fwrite(&pats[i].notes [j], sizeof(pats[0].notes [0]), 1, fp);
+			fwrite(&pats[i].fxs   [j], sizeof(pats[0].fxs   [0]), 1, fp);
+			fwrite(&pats[i].fxvals[j], sizeof(pats[0].fxvals[0]), 1, fp);
+		}
+	}
 	fclose(fp);
 }
 
 
 static void cmd_open()
 {
-	// .stlm; SpeakerTracker Loose Module
-	FILE * fp = fopen("music.stlm", "r");
+	// .stm; Speakertracker Tight Module
+	FILE * fp = fopen("music.stm", "r");
 	if (!fp) {
 //		fprintf(stderr, "Could not open.");
 		printf("\a");
@@ -472,7 +481,15 @@ static void cmd_open()
 	cmd_create();
 
 	fread(&npat, sizeof(npat), 1, fp);
-	fread(pats, sizeof(pats), 1, fp);
+	int i, j;
+	for (i=0; i<npat; i++) {
+		fread(&pats[i].nrow, sizeof(pats[0].nrow), 1, fp);
+		for (j=0; j<pats[i].nrow; j++) {
+			fread(&pats[i].notes [j], sizeof(pats[0].notes [0]), 1, fp);
+			fread(&pats[i].fxs   [j], sizeof(pats[0].fxs   [0]), 1, fp);
+			fread(&pats[i].fxvals[j], sizeof(pats[0].fxvals[0]), 1, fp);
+		}
+	}
 	fclose(fp);
 }
 
