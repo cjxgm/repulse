@@ -1,6 +1,6 @@
 # speakertracker
 The Simplest `Module Music Tracker` using `PC Speaker` for Linux(R).
-`ALPHA`
+`0.1x ALPHA`
 
 ## document
 
