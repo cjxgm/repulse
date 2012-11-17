@@ -53,7 +53,7 @@
 #define COLOR_NOTE					"\e[31m"
 #define COLOR_FX					"\e[35m"
 #define COLOR_FX_INVALID			"\e[30m"
-/* pc speacker */
+/* pc speaker */
 #define CLOCK_TICK_RATE 1193180
 
 
@@ -84,7 +84,7 @@ static u32     npat;
 static Pattern pats[MAX_PATTERN];
 /* terminal */
 static int term_height;
-/* pc speacker */
+/* pc speaker */
 static int fd_beep;
 /* thread */
 static pthread_t th_play;
@@ -106,7 +106,7 @@ static void render();
 static void print_line(int i);
 static void print_pattern(int i);
 static void print_row(int i);
-/* pc speacker */
+/* pc speaker */
 static void beep_init();
 static void beep_free();
 static void beep(float freq);
@@ -143,7 +143,8 @@ int main()
 	cmd_create();
 
 	// command loop
-	do render(); while (process_key(getchar()));
+	do render();
+	while (process_key(getchar()));
 
 	// reset terminal and go back to system
 	term_nocbne();
@@ -375,7 +376,7 @@ static void print_row(int i)
 
 /**********************************************************************
  *
- * pc speacker
+ * pc speaker
  *
  */
 
