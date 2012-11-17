@@ -1,11 +1,14 @@
-# speakertracker
-The Simplest `Module Music Tracker` using `PC Speaker` for Linux(R).
-`0.1x ALPHA`
+# repulse - Pulse the PC Speaker for Music
+A `PC Speaker``Module Music Tracker` for Linux(R).<br>
+`0.1x ALPHA`<br>
+Copyright (C) eXerigumo Clanjor (哆啦比猫/兰威举), 2012.<br>
+Licensed under `GPLv2`.
+<hr>
 
 ## document
 
 ### Key Bindings
-There are 4 input modes in speakertracker, each mode has their own key
+There are 4 input modes in repulse, each mode has their own key
 bindings. They are: `Note Input Mode`, `Effect Input Mode`,
 `Effect Value First Half Mode` and `Effect Value Last Half`.
 

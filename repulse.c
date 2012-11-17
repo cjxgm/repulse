@@ -1,5 +1,6 @@
 // vim: syntax=c noet sw=4 sts=0 ts=4 fenc=utf-8
-/* st - the simplest module music tracker using PC Speacker for Linux(R).
+
+/* repulse - A PC Speaker Module Music Tracker for Linux(R).
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +19,8 @@
  * 
  *
  * Contributer(s):
- * 		eXerigumo Clanjor <cjxgm@126.com>
+ *		eXerigumo Clanjor (哆啦比猫/兰威举), <cjxgm@126.com>
+ *
  */
 
 
@@ -71,7 +73,7 @@ Pattern;
 
 
 // global variables
-static const char header[] = "sttm0.1x";
+static const char header[] = "rpul0.1x";
 static u32     tpr;			// time per row
 static u8      mode;		// 0 => note, 1 => fx, 2 => fxv1, 3 => fxv2
 static u8      coct;		// current octave
@@ -307,7 +309,7 @@ static void render()
 	term_reset_cursor();
 
 	// header
-	printf(COLOR_LOGO "Speaker Tracker " VERSION "\n");
+	printf(COLOR_LOGO "repulse " VERSION "\n");
 	printf(COLOR_LINE "%2.2X ", cpat);
 
 	if (mode == 0) printf(COLOR_CURRENT_PATTERN "   " COLOR_NORMAL "    ");
@@ -438,7 +440,7 @@ static void cmd_stop()
 static void cmd_save()
 {
 	// .stm; Speakertracker Tight Module
-	FILE * fp = fopen("music.stm", "w");
+	FILE * fp = fopen("music.rp", "w");
 	if (!fp) {
 //		fprintf(stderr, "Could not save.");
 		printf("\a");
@@ -463,7 +465,7 @@ static void cmd_save()
 static void cmd_open()
 {
 	// .stm; Speakertracker Tight Module
-	FILE * fp = fopen("music.stm", "r");
+	FILE * fp = fopen("music.rp", "r");
 	if (!fp) {
 //		fprintf(stderr, "Could not open.");
 		printf("\a");
