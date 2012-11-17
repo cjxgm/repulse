@@ -6,6 +6,21 @@ Licensed under `GPLv2`.
 <hr>
 
 ## document
+### First Try
+Clone this repo and build repulse:
+
+	git clone git://github.com/cjxgm/repulse.git
+	cd repulse
+	make
+
+Run repulse:
+
+	sudo ./repulse
+
+
+> Why sudo?
+
+Because it needs to operate /dev/console.
 
 ### Key Bindings
 There are 4 input modes in repulse, each mode has their own key
@@ -19,7 +34,7 @@ Following keys are usable in every mode:
 
 * `c`: Create a new module (clear everything).
 * `TAB`: Change input mode.
-* `o`, `s`: Open/Save file. Currently it can only work with `music.stm`.
+* `o`, `s`: Open/Save file. Currently it can only work with `music.rp`.
 * `[`, `]`: Decrease/Increase display height.
 * `RETURN`: Play. When playing, press any key to stop.
 * `-`, `=`: Decrease/Increase rows.
